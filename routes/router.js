@@ -1,5 +1,5 @@
 import express from "express";
-import { home, loginForm, registerForm, participants, addSkater } from "../controller/controller.js";
+import { home, loginForm, registerForm, participants, addSkater, getSkaters } from "../controller/controller.js";
 const router = express.Router();
 
 router.get("/", home);

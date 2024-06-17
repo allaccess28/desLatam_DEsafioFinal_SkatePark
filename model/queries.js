@@ -33,4 +33,19 @@ export const addSkaterQuery = async (
   }
 };
 
-
+export const getSkatersQuery = async () => {
+  try {
+    const sql = {
+      text: "SELECT * FROM skaters",
+    };
+    const result = await pool.query(sql);
+    if (result.rowCount > 0) {
+      console.log(result.rows);
+      return result.rows;
+    } else {
+      return new Error("No se encontraron skaters");
+    }
+  } catch (error) {
+    console.log("Query Error code: ", error.code, "Error: ", error.message);
+  }
+};
