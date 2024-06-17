@@ -49,3 +49,21 @@ export const getSkatersQuery = async () => {
     console.log("Query Error code: ", error.code, "Error: ", error.message);
   }
 };
+
+export const verifyUserQuery = async (email) => {
+  try {
+    const sql = {
+      text: "SELECT * FROM skaters WHERE email = $1",
+      values: [email],
+    };
+    const result = await pool.query(sql);
+    if (result.rowCount > 0) {
+      console.log(result.rows);
+      return result.rows[0];
+    } else {
+      return new Error("No se encontraron Usuarios");
+    }
+  } catch (error) {
+    console.log("Query Error code: ", error.code, "Error: ", error.message);
+  }
+}

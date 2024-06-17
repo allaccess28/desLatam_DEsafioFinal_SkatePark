@@ -1,5 +1,6 @@
-import { addSkaterQuery, getSkatersQuery } from "../model/queries.js";
-import { v4 as uuidv4 } from "uuid";
+import { addSkaterQuery, getSkatersQuery, verifyUserQuery } from "../model/queries.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 process.loadEnvFile();
 
 
@@ -36,8 +37,24 @@ export const addSkater = async (req, res) => {
         const imageName = nombre;
         const imageUrl = `/uploads/${imageName}.jpg`;
         image.mv(`./uploads/${imageName}.jpg`);
-        //console.log(email, nombre, password, anos_experiencia, especialidad, estado, imageUrl);
-        await addSkaterQuery(email, nombre, password, anos_experiencia, especialidad, imageUrl, estado);
+
+
+
+        //verificacion de correo existente
+        const userVerify = await verifyUserQuery(email);
+        if (userVerify) {
+            res.render("register", {
+                title: "Register Skate Park",
+                errors: [{ msg: "El correo ya existe" }],
+            })
+        }
+
+        //hashear el password y mail
+        const passwordHash = await bcrypt.hash(password, 10);
+        const emailHash = await bcrypt.hash(email, 10);
+
+        console.log(emailHash, nombre, passwordHash, anos_experiencia, especialidad, estado, imageUrl);
+        await addSkaterQuery(emailHash, nombre, passwordHash, anos_experiencia, especialidad, imageUrl, estado);
     } catch (error) {
         res.status (500).send(error.message);
     }
