@@ -1,0 +1,11 @@
+//postgresql data
+DB_USER =
+DB_PASSWORD=
+DB_HOST=
+DB_DATABASE=
+//nodemailer data
+USER_MAIL=
+USER_PASSWORD=
+USER_SERVICE=
+//login jwt
+JWT_SECRET_KEY=

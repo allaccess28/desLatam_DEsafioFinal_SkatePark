@@ -2,6 +2,7 @@ import express from "express";
 import router from "./routes/router.js";
 import { engine } from "express-handlebars";
 import cookieParser from "cookie-parser";
+import expressFileUpload from 'express-fileupload';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -19,6 +20,11 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(expressFileUpload({
+    limits: { fileSize: 500000 },
+    responseOnLimit: 'El archivo es demasiado grande',
+    abortOnLimit: true
+}));
 
 //routes
 app.use("/", router);
