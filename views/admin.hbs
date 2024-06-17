@@ -1,0 +1,35 @@
+<div class="py-4">
+      <h2>Administración</h2>
+      <hr class="w-50" />
+
+      <table class="table w-50 m-auto mt-3 transparentSquare rounded">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Foto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Años de experiencia</th>
+            <th scope="col">Especialidad</th>
+            <th scope="col">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#if skaters}}
+            {{#each skaters}}
+              <tr>
+                <th scope="row">{{id}}</th>
+                <td><img src="{{foto}}" alt="{{foto}}"  width="20"></td>
+                <td>{{nombre}}</td>
+                <td>{{anos_experiencia}}</td>
+                <td>{{especialidad}}</td>
+                {{#if estado}}
+                   <td><input type="checkbox" checked /></td>
+                {{else}}
+                   <td><input type="checkbox" /></td>
+                {{/if}}
+              </tr>
+            {{/each}}
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
