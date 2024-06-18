@@ -2,50 +2,51 @@
       <h2>Datos del perfil</h2>
       <hr class="w-50" />
 
-      <form>
+      <form action="/update" method="post">
         <div class="form-group row w-50 m-auto">
           <div class="form-group col-12 col-sm-6">
-            <label>Email</label>
+            <label for="email" >Email</label>
             <input
-              class="form-control m-auto"
-              disabled
-              value="tonyhawk@skate.com"
-            />
+              class="form-control m-auto mb-3"
+              
+              value="{{skater.email}}"
+            id="email" name="email" readonly/>
           </div>
           <div class="form-group col-12 col-sm-6">
-            <label>Nombre</label>
-            <input class="form-control m-auto" value="Tony Hawk" />
+            <label for="nombre">Nombre</label>
+            <input class="form-control m-auto mb-3" value="{{skater.nombre}}" id="nombre" name="nombre"/>
           </div>
           <div class="form-group col-12 col-sm-6">
-            <label>Password</label>
+            <label for="password">Password</label>
+            <input
+              type="password"
+              class="form-control m-auto mb-3"
+              
+            id="password" name="password"/>
+          </div>
+          <div class="form-group col-12 col-sm-6 mb-3">
+            <label for="confirm_password">Repita la password</label>
             <input
               type="password"
               class="form-control m-auto"
-              value="12345678"
-            />
+              
+            id="confirm_password" name="confirm_password"/>
+          </div>
+          <div class="form-group col-12 col-sm-6 mb-3">
+            <label for="anos_experiencia">Años de experiencia</label>
+            <input class="form-control m-auto" value="{{skater.anos_experiencia}}" id="anos_experiencia" name="anos_experiencia" />
           </div>
           <div class="form-group col-12 col-sm-6">
-            <label>Repita la password</label>
-            <input
-              type="password"
-              class="form-control m-auto"
-              value="12345678"
-            />
-          </div>
-          <div class="form-group col-12 col-sm-6">
-            <label>Años de experiencia</label>
-            <input class="form-control m-auto" value="12" />
-          </div>
-          <div class="form-group col-12 col-sm-6">
-            <label>Especialidad</label>
-            <input class="form-control m-auto" value="Kickflip" />
+            <label for="especialidad">Especialidad</label>
+            <input class="form-control m-auto mb-3" value="{{skater.especialidad}}" id="especialidad" name="especialidad" />
           </div>
         </div>
         <div class="mb-1">
-          <button class="btn btn-primary">Actualizar</button>
+          <button class="btn btn-primary mb-3" type="submit">Actualizar</button>
         </div>
         <div>
-          <button class="btn btn-danger">Eliminar cuenta</button>
         </div>
       </form>
+          <button class="btn btn-danger" type="submit" onclick="location.href='/delete?email='+'{{skater.email}}'">Eliminar cuenta</button>
     </div>
+  

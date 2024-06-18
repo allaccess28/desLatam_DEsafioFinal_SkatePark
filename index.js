@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(expressFileUpload({
-    limits: { fileSize: 500000 },
+    limits: { fileSize: 1000000 },
     responseOnLimit: 'El archivo es demasiado grande',
     abortOnLimit: true
 }));

@@ -40,7 +40,7 @@ export const getSkatersQuery = async () => {
     };
     const result = await pool.query(sql);
     if (result.rowCount > 0) {
-      console.log(result.rows);
+      
       return result.rows;
     } else {
       return new Error("No se encontraron skaters");
@@ -58,10 +58,45 @@ export const verifyUserQuery = async (email) => {
     };
     const result = await pool.query(sql);
     if (result.rowCount > 0) {
-      console.log(result.rows);
+      
       return result.rows[0];
     } else {
       return new Error("No se encontraron Usuarios");
+    }
+  } catch (error) {
+    console.log("Query Error code: ", error.code, "Error: ", error.message);
+  }
+}
+
+
+export const updateSkaterQuery = async (email, nombre, password, anos_experiencia, especialidad ) => {
+  try {
+    const sql = {
+      text: "UPDATE skaters SET nombre = $1, password = $2, anos_experiencia = $3, especialidad = $4 WHERE email = $5 returning *",
+      values: [nombre, password, anos_experiencia, especialidad, email],
+    }
+    const result = await pool.query(sql);
+    if (result.rowCount > 0) {
+      return result.rows[0];
+    } else {
+      return new Error("No se pudo actualizar el skater");
+    }
+  } catch (error) {
+    console.log("Query Error code: ", error.code, "Error: ", error.message);
+  }
+}
+
+export const deleteSkaterQuery = async (email) => {
+  try {
+    const sql = {
+      text: "DELETE FROM skaters WHERE email = $1",
+      values: [email],
+    };
+    const result = await pool.query(sql);
+    if (result.rowCount > 0) {
+      return result.rows[0];
+    } else {
+      return new Error("No se pudo borrar el skater");
     }
   } catch (error) {
     console.log("Query Error code: ", error.code, "Error: ", error.message);

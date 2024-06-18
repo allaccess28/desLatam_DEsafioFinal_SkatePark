@@ -1,5 +1,5 @@
 import express from "express";
-import { home, loginForm, registerForm, participants, addSkater, getSkaters, login, dataSkaters, admin} from "../controller/controller.js";
+import { home, loginForm, registerForm, participants, addSkater, getSkaters, login, dataSkaters, admin, updateSkater, deleteSkater} from "../controller/controller.js";
 const router = express.Router();
 
 router.get("/", home);
@@ -11,6 +11,7 @@ router.get("/admin", admin);
 
 router.post("/register/add", addSkater);
 router.post("/login", login);
-
+router.post("/update", updateSkater);
+router.get("/delete", deleteSkater);
 
 export default router;

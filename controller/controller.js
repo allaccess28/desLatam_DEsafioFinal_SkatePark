@@ -1,4 +1,4 @@
-import { addSkaterQuery, getSkatersQuery, verifyUserQuery } from "../model/queries.js";
+import { addSkaterQuery, getSkatersQuery, verifyUserQuery, updateSkaterQuery, deleteSkaterQuery } from "../model/queries.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { check, validationResult } from "express-validator";
@@ -31,11 +31,21 @@ export const participants =  async (req, res) => {
 }
 
 export const dataSkaters = async (req, res) => {
-    res.render("datos", {
-        title: "Skate Park",
-        skaters: await getSkatersQuery(),
-    })
-}
+    try {
+        const email = req.query.email;
+        
+        const skaters = await verifyUserQuery(email);
+        
+        res.render("datos", {
+            title: "Datos Skate Park",
+            skater: skaters,
+        });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred");
+    }
+};
 
 export const admin =async (req, res) => {
     res.render("admin", {
@@ -58,7 +68,7 @@ export const addSkater = async (req, res) => {
         //validaciones de campos requeridos
         await check("email").isEmail().withMessage("Ingresa un correo valido").run(req);
         await check("nombre").notEmpty().withMessage("Ingresa un nombre").run(req);
-        await check("password").isLenght({ min: 6 }).withMessage("Ingresa un password de al menos 6 caracteres").run(req);
+        await check("password").isLength({ min: 6 }).withMessage("Ingresa un password de al menos 6 caracteres").run(req);
         await check("confirm_password").equals(password).withMessage("Las passwords no coinciden").run(req);
         await check("anos_experiencia").notEmpty().withMessage("Ingresa años de experiencia").run(req);
         await check("especialidad").notEmpty().withMessage("Ingresa truco especial").run(req);
@@ -80,14 +90,17 @@ export const addSkater = async (req, res) => {
                 title: "Register Skate Park",
                 errors: [{ msg: "El correo ya existe" }],
             })
-        }
+            }
+            //hashear el password y mail
+            const passwordHash = await bcrypt.hash(password, 10);
+            
+    
+            
+            
+           await addSkaterQuery(email, nombre, passwordHash, anos_experiencia, especialidad, imageUrl, estado);
 
-        //hashear el password y mail
-        const passwordHash = await bcrypt.hash(password, 10);
         
 
-        console.log(email, nombre, passwordHash, anos_experiencia, especialidad, estado, imageUrl);
-        await addSkaterQuery(email, nombre, passwordHash, anos_experiencia, especialidad, imageUrl, estado);
     } catch (error) {
         res.status (500).send(error.message);
     }
@@ -107,7 +120,7 @@ export const getSkaters = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email, password);
+        
         //validaciones de campos requeridos
         await check("email").isEmail().withMessage("Ingresa un correo valido").run(req);
         await check("password").isLength({ min: 6 }).withMessage("Ingresa un password de al menos 6 caracteres").run(req);
@@ -122,7 +135,7 @@ export const login = async (req, res) => {
         }
         //verificar si el usuario existe
         const userVerify = await verifyUserQuery(email);
-        console.log(userVerify);
+        
         if (!userVerify) {
             res.render("login", {
                 title: "Login Skate Park",
@@ -135,7 +148,7 @@ export const login = async (req, res) => {
             const token = jwt.sign({ email: email }, secretKey, {
                 expiresIn: "180s",
             });
-            console.log(token);
+            
             res.cookie("jwtToken", token,{
                 httpOnly: true,
                 maxAge: 1800000,
@@ -144,7 +157,7 @@ export const login = async (req, res) => {
         //si entra con contraseña de usuario
         //verificar password
         const passwordVerify = await bcrypt.compare(password, userVerify.password);
-        console.log(passwordVerify);
+        
         if (!passwordVerify) {
             res.render("login", {
                 title: "Login Skate Park",
@@ -156,17 +169,54 @@ export const login = async (req, res) => {
             const token = jwt.sign({ email: userVerify.email }, secretKey, {
                 expiresIn: "180s",
             });
-            console.log(token);
+            
             res.cookie("jwtToken", token,{
                 httpOnly: true,
-                maxAge: 1800000,
-            }).redirect("/datos");
-            
+                maxAge: 180000,
+            }).status(200).redirect("/datos?email=" + encodeURIComponent(userVerify.email));
         }
-
-        
         } catch (error) {
             res.status (500).send(error.message);
         }
 };
 
+export const updateSkater = async (req, res) => {
+    try {
+        
+        const { email, nombre, password, anos_experiencia, especialidad } = req.body;
+        //Validaciones
+        await check("nombre").notEmpty().withMessage("Ingresa un nombre").run(req);
+        
+        await check("anos_experiencia").notEmpty().withMessage("Ingresa años de experiencia").run(req);
+        await check("especialidad").notEmpty().withMessage("Ingresa truco especial").run(req);
+        const errors = validationResult(req);
+        //si hay errores en el formulario   
+        if (!errors.isEmpty()) {
+            res.render("register", {
+                title: "Register Skate Park",
+                errors: errors.array(),
+                old: req.body
+            })
+        }
+        //hashear el password y mail
+        const passwordHash = await bcrypt.hash(password, 10);
+        //enviar datos a la query
+         await updateSkaterQuery(email, nombre, passwordHash, anos_experiencia, especialidad );
+        
+        res.status(200).redirect("/participants");
+    } catch (error) {
+        res.status (500).send(error.message);
+    }
+}
+
+export const deleteSkater = async (req, res) => {
+    const { email } = req.query;
+    console.log(email)
+    
+    try {
+        await deleteSkaterQuery(email);
+        res.status(200).redirect("/participants");
+    } catch (error) {
+        res.status (500).send(error.message);
+    }
+}
