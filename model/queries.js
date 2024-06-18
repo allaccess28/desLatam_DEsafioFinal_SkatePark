@@ -102,3 +102,20 @@ export const deleteSkaterQuery = async (email) => {
     console.log("Query Error code: ", error.code, "Error: ", error.message);
   }
 }
+
+export const adminAprovalQuery = async (email, estado) => {
+  try {
+    const sql = {
+      text: "UPDATE skaters SET estado = $1 WHERE email = $2",
+      values: [estado, email],
+    };
+    const result = await pool.query(sql);
+    if (result.rowCount > 0) {
+      return result.rows[0];
+    } else {
+      return new Error("No se pudo borrar el skater");
+    }
+  } catch (error) {
+    console.log("Query Error code: ", error.code, "Error: ", error.message);
+  }
+}

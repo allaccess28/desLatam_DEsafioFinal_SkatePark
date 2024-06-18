@@ -2,6 +2,7 @@
       <h2>Administración</h2>
       <hr class="w-50" />
 
+      
       <table class="table w-50 m-auto mt-3 transparentSquare rounded">
         <thead>
           <tr>
@@ -22,14 +23,17 @@
                 <td>{{nombre}}</td>
                 <td>{{anos_experiencia}}</td>
                 <td>{{especialidad}}</td>
-                {{#if estado}}
-                   <td><input type="checkbox" checked /></td>
-                {{else}}
-                   <td><input type="checkbox" /></td>
-                {{/if}}
-              </tr>
+                <td>
+                <form class="estado-form" action="/update-estado" method="post">
+                <input type="hidden" name="email" value="{{email}}">
+                <input type="checkbox" name="estado"  {{#if estado}}checked{{/if}} onchange="this.form.submit()"/>
+                </form>
+                </td>
+                </tr>
             {{/each}}
           {{/if}}
         </tbody>
       </table>
+
+      
     </div>

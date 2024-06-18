@@ -1,4 +1,4 @@
-import { addSkaterQuery, getSkatersQuery, verifyUserQuery, updateSkaterQuery, deleteSkaterQuery } from "../model/queries.js";
+import { addSkaterQuery, getSkatersQuery, verifyUserQuery, updateSkaterQuery, deleteSkaterQuery, adminAprovalQuery } from "../model/queries.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { check, validationResult } from "express-validator";
@@ -216,6 +216,16 @@ export const deleteSkater = async (req, res) => {
     try {
         await deleteSkaterQuery(email);
         res.status(200).redirect("/participants");
+    } catch (error) {
+        res.status (500).send(error.message);
+    }
+}
+
+export const adminAproval = async (req, res) => {
+    const { email, estado } = req.body;
+    try {
+        await adminAprovalQuery(email, estado);
+        res.status(200).redirect("/admin");
     } catch (error) {
         res.status (500).send(error.message);
     }
