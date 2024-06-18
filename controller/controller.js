@@ -24,10 +24,13 @@ export const registerForm = (req, res) => {
 }
 
 export const participants =  async (req, res) => {
+    console.log(await getSkatersQuery())
     res.render("participants",
          {title: "Participants Skate Park",
          skaters: await getSkatersQuery()
+         
          });
+
 }
 
 export const dataSkaters = async (req, res) => {
@@ -63,7 +66,7 @@ export const addSkater = async (req, res) => {
         const estado = false;
         const imageName = nombre;
         const imageUrl = `/uploads/${imageName}.jpg`;
-        image.mv(`./uploads/${imageName}.jpg`);
+        image.mv(`public/uploads/${imageName}.jpg`);
 
         //validaciones de campos requeridos
         await check("email").isEmail().withMessage("Ingresa un correo valido").run(req);
@@ -110,6 +113,7 @@ export const addSkater = async (req, res) => {
 export const getSkaters = async (req, res) => {
     try {
         const skaters = await getSkatersQuery();
+        
         res.status(200).json(skaters);
     } catch (error) {
         res.status (500).send(error.message);
@@ -223,6 +227,7 @@ export const deleteSkater = async (req, res) => {
 
 export const adminAproval = async (req, res) => {
     const { email, estado } = req.body;
+    console.log(email, estado)
     try {
         await adminAprovalQuery(email, estado);
         res.status(200).redirect("/admin");

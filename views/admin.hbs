@@ -26,7 +26,7 @@
                 <td>
                 <form class="estado-form" action="/update-estado" method="post">
                 <input type="hidden" name="email" value="{{email}}">
-                <input type="checkbox" name="estado"  {{#if estado}}checked{{/if}} onchange="this.form.submit()"/>
+                <input type="checkbox" name="estado"  {{#if estado}}checked{{/if}} onchange="form.submit(this)"/>
                 </form>
                 </td>
                 </tr>
@@ -34,6 +34,4 @@
           {{/if}}
         </tbody>
       </table>
-
-      
     </div>
